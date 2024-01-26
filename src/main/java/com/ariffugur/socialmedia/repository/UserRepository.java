@@ -1,0 +1,8 @@
+package com.ariffugur.socialmedia.repository;
+
+import com.ariffugur.socialmedia.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Integer> {
+
+}
