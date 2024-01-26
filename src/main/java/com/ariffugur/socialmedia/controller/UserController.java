@@ -1,63 +1,51 @@
 package com.ariffugur.socialmedia.controller;
 
 import com.ariffugur.socialmedia.model.User;
+import com.ariffugur.socialmedia.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        User user1 = new User(1, "arif", "ugur", "arifugur@gmail.com", "123456");
-        User user2 = new User(2, "idris", "elba", "idriselba@gmail.com", "123456");
-        users.add(user1);
-        users.add(user2);
-        return users;
+        return userService.getAllUsers();
     }
 
     @GetMapping("/user/{id}")
-    public User getByUserId(@PathVariable("id") Integer id) {
-        User user1 = new User(1, "arif", "ugur", "arifugur@gmail.com", "123456");
-        user1.setId(id);
-        return user1;
+    public User getByUserId(@PathVariable("id") Integer id) throws Exception {
+        return userService.findUserById(id);
     }
 
     @PostMapping("/create")
     public User createUser(@RequestBody User user) {
-        User newUser = new User();
-        newUser.setId(user.getId());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
-        return newUser;
-
+        return userService.registerUser(user);
     }
 
-    @PutMapping("/update")
-    public User updateUser(@RequestBody User user) {
-        User user1 = new User(1, "arif", "ugur", "arifugur@gmail.com", "123456");
-        if (user.getFirstName() != null) {
-            user1.setFirstName(user.getFirstName());
-        }
-        if (user.getLastName() != null) {
-            user1.setLastName(user.getLastName());
-        }
-        if (user.getEmail() != null) {
-            user1.setEmail(user.getEmail());
-        }
-        if (user.getPassword() != null) {
-            user1.setPassword(user.getPassword());
-        }
-        return user1;
+    @PutMapping("/update/{id}")
+    public User updateUser(@PathVariable("id") Integer id, @RequestBody User user) throws Exception {
+        return userService.followUser(id, user.getId());
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id) {
-        return "user deleted " + id;
+    public User deleteUser(@PathVariable("id") Integer id) throws Exception {
+        return userService.deleteUser(id);
+    }
 
+    @PutMapping("/user/{userId1}/{userId2}")
+    public User followUserHandler(@PathVariable("userId1") Integer userId1, @PathVariable("userId2") Integer userId2) throws Exception {
+        return userService.followUser(userId1, userId2);
+    }
+
+    @GetMapping("/users/search")
+    public List<User> searchUsers(@RequestParam("query") String query) {
+        return userService.searchUsers(query);
     }
 }
