@@ -15,7 +15,9 @@ public class Post {
     private String caption;
     private String image;
     private String video;
+    @ManyToOne
     private User user;
+    @OneToMany
     private List<User> liked = new ArrayList<>();
     private LocalDateTime createdAt;
 
