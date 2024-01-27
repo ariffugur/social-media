@@ -1,5 +1,6 @@
 package com.ariffugur.socialmedia.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class Post {
     @ManyToOne
     private User user;
     @OneToMany
+    @JsonManagedReference
     private List<User> liked = new ArrayList<>();
     private LocalDateTime createdAt;
 

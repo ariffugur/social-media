@@ -61,7 +61,7 @@ public class UserService {
         if (user.getPassword() != null) {
             oldUser.setPassword(user.getPassword());
         }
-        return userRepository.save(oldUser);
+        return save(oldUser);
     }
 
     public List<User> searchUsers(@Param("query") String query) {

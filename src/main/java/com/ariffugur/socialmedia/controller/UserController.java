@@ -31,8 +31,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public User updateUser(@PathVariable("id") Integer id, @RequestBody User user) throws Exception {
-        return userService.followUser(id, user.getId());
+    public User updateUser( @RequestBody User user, @PathVariable("id") Integer id) throws Exception {
+        return userService.updateUser(user,id);
     }
 
     @DeleteMapping("/delete/{id}")

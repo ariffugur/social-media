@@ -23,11 +23,11 @@ public class PostService {
         Post newPost = new Post();
         newPost.setCaption(post.getCaption());
         newPost.setImage(post.getImage());
-        //newPost.setCreatedAt(LocalDateTime.now());
+        newPost.setCreatedAt(LocalDateTime.now());
         newPost.setVideo(post.getVideo());
         newPost.setImage(post.getImage());
         newPost.setUser(userService.findUserById(userId));
-        return newPost;
+        return postRepository.save(newPost);
 
     }
 
@@ -62,7 +62,9 @@ public class PostService {
         User user = userService.findUserById(userId);
         if (user.getSavedPost().contains(post)) {
             user.getSavedPost().remove(post);
-        } else user.getSavedPost().add(post);
+        } else {
+            user.getSavedPost().add(post);
+        }
         userService.save(user);
         return post;
     }
