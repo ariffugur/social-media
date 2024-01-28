@@ -2,6 +2,7 @@ package com.ariffugur.socialmedia.controller;
 
 import com.ariffugur.socialmedia.model.User;
 import com.ariffugur.socialmedia.service.UserService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public User updateUser( @RequestBody User user, @PathVariable("id") Integer id) throws Exception {
-        return userService.updateUser(user,id);
+    public User updateUser(@RequestBody User user, @PathVariable("id") Integer id) throws Exception {
+        return userService.updateUser(user, id);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -45,7 +46,7 @@ public class UserController {
         return userService.followUser(userId1, userId2);
     }
 
-    @GetMapping("/users/search")
+    @GetMapping("/search")
     public List<User> searchUsers(@RequestParam("query") String query) {
         return userService.searchUsers(query);
     }

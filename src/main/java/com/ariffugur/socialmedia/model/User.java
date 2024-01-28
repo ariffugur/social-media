@@ -1,6 +1,7 @@
 package com.ariffugur.socialmedia.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public class User {
     private String gender;
     private List<Integer> followers = new ArrayList<>();
     private List<Integer> following = new ArrayList<>();
-    @ManyToMany
-    @JsonBackReference
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Post> savedPost = new ArrayList<>();
 
     public User() {

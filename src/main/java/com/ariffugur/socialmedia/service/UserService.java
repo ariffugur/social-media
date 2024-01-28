@@ -4,6 +4,7 @@ import com.ariffugur.socialmedia.model.User;
 import com.ariffugur.socialmedia.repository.UserRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,7 @@ public class UserService {
         return save(oldUser);
     }
 
-    public List<User> searchUsers(@Param("query") String query) {
+    public List<User> searchUsers(@RequestParam("query") String query) {
         return userRepository.searchUsers(query);
     }
 

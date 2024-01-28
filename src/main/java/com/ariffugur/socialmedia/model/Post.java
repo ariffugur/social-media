@@ -1,5 +1,6 @@
 package com.ariffugur.socialmedia.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -16,10 +17,11 @@ public class Post {
     private String caption;
     private String image;
     private String video;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    //@JsonIgnore
     private User user;
     @OneToMany
-    @JsonManagedReference
+    @JsonIgnore
     private List<User> liked = new ArrayList<>();
     private LocalDateTime createdAt;
 

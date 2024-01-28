@@ -34,11 +34,13 @@ public class PostService {
     public String deletePost(Integer postId, Integer userId) throws Exception {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
-        if (post.getUser().getId() != user.getId()) {
+        if (post.getUser().getId().equals(user.getId())) {
+            postRepository.delete(post);
+            return "Post deleted successfully";
+        } else {
             throw new Exception("Post not found with id: " + postId);
         }
-        postRepository.delete(post);
-        return "Post deleted successfully";
+
     }
 
     public List<Post> findPostByUserId(Integer userId) throws Exception {
