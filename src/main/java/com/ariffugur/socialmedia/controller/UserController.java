@@ -17,12 +17,9 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    public UserController(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
+
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/users")
@@ -59,12 +56,5 @@ public class UserController {
     public List<User> searchUsers(@RequestParam("query") String query) {
         return userService.searchUsers(query);
     }
-    @PostMapping("/generateToken")
-    public String generateToken(@RequestBody AuthRequest authRequest) throws Exception {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.username());
-        }
-        throw new UsernameNotFoundException("Invalid username or password");
-    }
+
 }
