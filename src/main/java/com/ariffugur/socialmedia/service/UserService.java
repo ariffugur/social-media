@@ -3,6 +3,10 @@ package com.ariffugur.socialmedia.service;
 import com.ariffugur.socialmedia.model.User;
 import com.ariffugur.socialmedia.repository.UserRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -10,15 +14,24 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public User registerUser(User user) {
-        return userRepository.save(user);
+        User newUser = User.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .password(bCryptPasswordEncoder.encode(user.getPassword()))
+                .role(user.getRole())
+                .build();
+        return userRepository.save(newUser);
     }
 
     public User findUserById(Integer id) throws Exception {
@@ -29,9 +42,8 @@ public class UserService {
         throw new Exception("User not found with id: " + id);
     }
 
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
     }
 
     public User followUser(Integer userId1, Integer userId2) throws Exception {
@@ -56,8 +68,8 @@ public class UserService {
         if (user.getLastName() != null) {
             oldUser.setLastName(user.getLastName());
         }
-        if (user.getEmail() != null) {
-            oldUser.setEmail(user.getEmail());
+        if (user.getUsername() != null) {
+            oldUser.setUsername(user.getUsername());
         }
         if (user.getPassword() != null) {
             oldUser.setPassword(user.getPassword());
@@ -86,4 +98,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
 }
