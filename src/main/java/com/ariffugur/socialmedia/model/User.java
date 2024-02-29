@@ -35,7 +35,14 @@ public class User implements UserDetails {
     private String password;
     private String gender;
     private Role role;
+    @ElementCollection
+    @CollectionTable(name = "followers", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "follower_id")
     private List<Integer> followers = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "following", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "following_id")
     private List<Integer> following = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonIgnore

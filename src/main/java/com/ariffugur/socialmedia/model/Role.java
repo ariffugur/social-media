@@ -1,5 +1,7 @@
 package com.ariffugur.socialmedia.model;
 
+import jakarta.persistence.Entity;
+
 public enum Role {
     ROLE_USER("USER"),
     ROLE_ADMIN("ADMIN");

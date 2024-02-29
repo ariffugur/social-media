@@ -1,6 +1,7 @@
 package com.ariffugur.socialmedia.controller;
 
 import com.ariffugur.socialmedia.dto.AuthRequest;
+import com.ariffugur.socialmedia.dto.CreateUserRequest;
 import com.ariffugur.socialmedia.model.User;
 import com.ariffugur.socialmedia.service.JwtService;
 import com.ariffugur.socialmedia.service.UserService;
@@ -33,13 +34,14 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody CreateUserRequest user) {
         return userService.registerUser(user);
     }
 
-    @PutMapping("/update/{id}")
-    public User updateUser(@RequestBody User user, @PathVariable("id") Integer id) throws Exception {
-        return userService.updateUser(user, id);
+    @PutMapping("/update")
+    public User updateUser(@RequestHeader("Authorization") String jwt, @RequestBody User user) throws Exception {
+        User reqUser = userService.findUserByJwt(jwt);
+        return userService.updateUser(user, reqUser.getId());
     }
 
     @DeleteMapping("/delete/{id}")
@@ -47,9 +49,9 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
-    @PutMapping("/user/{userId1}/{userId2}")
-    public User followUserHandler(@PathVariable("userId1") Integer userId1, @PathVariable("userId2") Integer userId2) throws Exception {
-        return userService.followUser(userId1, userId2);
+    @PutMapping("/follow/{userId2}")
+    public User followUserHandler(@RequestHeader("Authorization") String jwt, @PathVariable("userId2") Integer userId2) throws Exception {
+        return userService.followUser(jwt, userId2);
     }
 
     @GetMapping("/search")
@@ -57,4 +59,10 @@ public class UserController {
         return userService.searchUsers(query);
     }
 
+    @GetMapping("/profile")
+    public User getUserFromToken(@RequestHeader("Authorization") String jwt) {
+
+        return userService.findUserByJwt(jwt);
+
+    }
 }

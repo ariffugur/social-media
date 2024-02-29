@@ -1,5 +1,6 @@
 package com.ariffugur.socialmedia.service;
 
+import com.ariffugur.socialmedia.dto.CreateUserRequest;
 import com.ariffugur.socialmedia.model.User;
 import com.ariffugur.socialmedia.repository.UserRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,19 +18,21 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtService = jwtService;
     }
 
-    public User registerUser(User user) {
+    public User registerUser(CreateUserRequest user) {
         User newUser = User.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .username(user.getUsername())
-                .password(bCryptPasswordEncoder.encode(user.getPassword()))
-                .role(user.getRole())
+                .firstName(user.firstName())
+                .lastName(user.lastName())
+                .username(user.username())
+                .password(bCryptPasswordEncoder.encode(user.password()))
+                .role(user.role())
                 .build();
         return userRepository.save(newUser);
     }
@@ -43,11 +46,12 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+        return userRepository.findByUsername(username).orElseThrow(null);
     }
 
-    public User followUser(Integer userId1, Integer userId2) throws Exception {
-        User user1 = findUserById(userId1);
+    public User followUser(String jwt, Integer userId2) throws Exception {
+        User reqUser = findUserByJwt(jwt);
+        User user1 = findUserById(reqUser.getId());
         User user2 = findUserById(userId2);
         user2.getFollowers().add(user1.getId());
         user1.getFollowing().add(user2.getId());
@@ -102,5 +106,10 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
+
+    public User findUserByJwt(String jwt) {
+        String username = jwtService.extractUsername(jwt.substring(7));
+        return findUserByUsername(username);
     }
 }
