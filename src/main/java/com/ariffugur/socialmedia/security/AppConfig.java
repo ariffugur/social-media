@@ -39,7 +39,7 @@ public class AppConfig {
                 .authorizeHttpRequests(x -> x
                         .requestMatchers("/user/**", "/login/**").permitAll())
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers("/post/**", "/comment/**", "/reels/**", "/story/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/post/**", "/comment/**", "/reels/**", "/story/**", "/chat/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

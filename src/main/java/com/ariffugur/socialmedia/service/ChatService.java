@@ -20,14 +20,16 @@ public class ChatService {
         this.userService = userService;
     }
 
-    public Chat createChat(User reqUser, User user2) {
-        Chat isExist = chatRepository.findChatByUsersId(reqUser, user2);
+    public Chat createChat(String reqUser, String user2) {
+      User newReqUser =  userService.findUserByUsername(reqUser);
+       User newUser2 = userService.findUserByUsername(user2);
+        Chat isExist = chatRepository.findChatByUserId(newReqUser, newUser2);
         if (isExist != null) {
             return isExist;
         }
         Chat chat = new Chat();
-        chat.getUsers().add(user2);
-        chat.getUsers().add(reqUser);
+        chat.getUsers().add(newUser2);
+        chat.getUsers().add(newReqUser);
         chat.setTimestamp(LocalDateTime.now());
         return chatRepository.save(chat);
     }
@@ -42,6 +44,6 @@ public class ChatService {
 
     public List<Chat> findUsersChat(String jwt) {
         User user = userService.findUserByJwt(jwt);
-        return chatRepository.findByUserId(user.getId());
+        return chatRepository.findByUsersId(user.getId());
     }
 }

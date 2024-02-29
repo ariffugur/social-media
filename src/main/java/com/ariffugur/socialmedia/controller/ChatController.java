@@ -23,7 +23,7 @@ public class ChatController {
 
     }
 
-    @GetMapping("/chats")
+    @GetMapping
     public List<Chat> findUsersChat(@RequestHeader("Authorization") String jwt) {
         return chatService.findUsersChat(jwt);
 
