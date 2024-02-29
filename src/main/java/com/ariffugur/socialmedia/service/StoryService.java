@@ -7,6 +7,7 @@ import com.ariffugur.socialmedia.repository.StoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class StoryService {
@@ -27,5 +28,11 @@ public class StoryService {
                 .user(user)
                 .build();
         return storyRepository.save(story);
+    }
+
+    public List<Story> findStoryByUser(String jwt) {
+        User user = userService.findUserByJwt(jwt);
+        return storyRepository.findByUserId(user.getId());
+
     }
 }
