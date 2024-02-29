@@ -78,6 +78,9 @@ public class UserService implements UserDetailsService {
         if (user.getPassword() != null) {
             oldUser.setPassword(user.getPassword());
         }
+        if (user.getGender() != null) {
+            oldUser.setGender(user.getGender());
+        }
         return save(oldUser);
     }
 

@@ -18,15 +18,15 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/create/user/{userId}")
-    public ResponseEntity<Post> createNewPost(@RequestBody Post post, @PathVariable("userId") Integer userId) throws Exception {
-        Post createdPost = postService.createNewPost(post, userId);
+    @PostMapping("/create")
+    public ResponseEntity<Post> createNewPost(@RequestHeader("Authorization") String jwt, @RequestBody Post post)  throws Exception {
+        Post createdPost = postService.createNewPost(jwt, post);
         return new ResponseEntity<>(createdPost, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/delete/post/{postId}/user/{userId}")
-    public ResponseEntity<ApiResponse> deletePost(@PathVariable("postId") Integer postId,@PathVariable("userId") Integer userId) throws Exception {
-        String message = postService.deletePost(postId, userId);
+    @DeleteMapping("/delete/post/{postId}")
+    public ResponseEntity<ApiResponse> deletePost(@PathVariable("postId") Integer postId,@RequestHeader("Authorization") String jwt) throws Exception {
+        String message = postService.deletePost(postId, jwt);
         ApiResponse apiResponse = new ApiResponse(message, true);
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }

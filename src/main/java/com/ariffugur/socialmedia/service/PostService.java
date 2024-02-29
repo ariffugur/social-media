@@ -13,27 +13,31 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
+    private final JwtService jwtService;
 
-    public PostService(PostRepository postRepository, UserService userService) {
+    public PostService(PostRepository postRepository, UserService userService, JwtService jwtService) {
         this.postRepository = postRepository;
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
-    public Post createNewPost(Post post, Integer userId) throws Exception {
+    public Post createNewPost(String jwt, Post post) throws Exception {
+        User reqUser = userService.findUserByJwt(jwt);
         Post newPost = new Post();
         newPost.setCaption(post.getCaption());
         newPost.setImage(post.getImage());
         newPost.setCreatedAt(LocalDateTime.now());
         newPost.setVideo(post.getVideo());
         newPost.setImage(post.getImage());
-        newPost.setUser(userService.findUserById(userId));
+        newPost.setUser(userService.findUserById(reqUser.getId()));
         return postRepository.save(newPost);
 
     }
 
-    public String deletePost(Integer postId, Integer userId) throws Exception {
+    public String deletePost(Integer postId, String jwt) throws Exception {
+        User reqUser = userService.findUserByJwt(jwt);
         Post post = findPostById(postId);
-        User user = userService.findUserById(userId);
+        User user = userService.findUserById(reqUser.getId());
         if (post.getUser().getId().equals(user.getId())) {
             postRepository.delete(post);
             return "Post deleted successfully";
