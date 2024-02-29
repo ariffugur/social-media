@@ -63,9 +63,10 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public Post savedPost(Integer postId, Integer userId) throws Exception {
+    public Post savedPost(Integer postId, String jwt) throws Exception {
+        User reqUser = userService.findUserByJwt(jwt);
         Post post = findPostById(postId);
-        User user = userService.findUserById(userId);
+        User user = userService.findUserById(reqUser.getId());
         if (user.getSavedPost().contains(post)) {
             user.getSavedPost().remove(post);
         } else {
@@ -75,14 +76,19 @@ public class PostService {
         return post;
     }
 
-    public Post likePost(Integer postId, Integer userId) throws Exception {
+    public Post likePost(Integer postId, String jwt) throws Exception {
+        User reqUser = userService.findUserByJwt(jwt);
         Post post = findPostById(postId);
-        User user = userService.findUserById(userId);
+        User user = userService.findUserById(reqUser.getId());
         if (post.getLiked().contains(user)) {
             post.getLiked().remove(user);
         } else {
             post.getLiked().add(user);
         }
+        return postRepository.save(post);
+    }
+
+    public Post savePost(Post post) {
         return postRepository.save(post);
     }
 }

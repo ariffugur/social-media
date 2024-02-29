@@ -37,9 +37,9 @@ public class AppConfig {
         return security
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers("/user/**","/login/**").permitAll())
+                        .requestMatchers("/user/**", "/login/**").permitAll())
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers("/post/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/post/**", "/comment/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
