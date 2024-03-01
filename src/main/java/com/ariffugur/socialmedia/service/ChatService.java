@@ -21,8 +21,8 @@ public class ChatService {
     }
 
     public Chat createChat(String reqUser, String user2) {
-      User newReqUser =  userService.findUserByUsername(reqUser);
-       User newUser2 = userService.findUserByUsername(user2);
+        User newReqUser = userService.findUserByUsername(reqUser);
+        User newUser2 = userService.findUserByUsername(user2);
         Chat isExist = chatRepository.findChatByUserId(newReqUser, newUser2);
         if (isExist != null) {
             return isExist;
@@ -45,5 +45,9 @@ public class ChatService {
     public List<Chat> findUsersChat(String jwt) {
         User user = userService.findUserByJwt(jwt);
         return chatRepository.findByUsersId(user.getId());
+    }
+
+    public Chat saveChat(Chat newChat) {
+        return chatRepository.save(newChat);
     }
 }

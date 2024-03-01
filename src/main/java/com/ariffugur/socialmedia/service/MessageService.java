@@ -32,10 +32,13 @@ public class MessageService {
                 .chat(newChat)
                 .timestamp(LocalDateTime.now())
                 .build();
+        newChat.getMessages().add(message);
+        chatService.saveChat(newChat);
         return messageRepository.save(message);
     }
 
-    public List<Message> findChatsMessage(Integer chatId) throws Exception {
+    public List<Message> findChatsMessage(String jwt, Integer chatId) throws Exception {
+        User user = userService.findUserByJwt(jwt);
         Chat chat = chatService.findChatById(chatId);
         return messageRepository.findByChatId(chatId);
 
